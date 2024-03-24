@@ -5,7 +5,7 @@ functions {
 		   normal_lcdf(a | mu, sigma));
   }
   
-  // the discrete-factivity model likelihood:
+  // the discrete-world model likelihood:
   real likelihood_lpdf(
 		       real y,
 		       real predicate,
