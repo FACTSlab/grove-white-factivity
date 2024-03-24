@@ -5,27 +5,21 @@ functions {
 		   normal_lcdf(a | mu, sigma));
   }
   
-  // the wholly-discrete model likelihood:
+  // the wholly-gradient model likelihood:
   real likelihood_lpdf(
 		       real y,
 		       real predicate,
 		       real world,
 		       real sigma
 		       ) {
-    return log_mix(
-		   predicate,
-		   truncated_normal_lpdf(y | 1, sigma, 0, 1),
-		   log_mix(
-			   world,
-			   truncated_normal_lpdf(y | 1, sigma, 0, 1),
-			   truncated_normal_lpdf(y | 0, sigma, 0, 1)
-			   )
-		   );
+    real theta = predicate + (1 - predicate) * world;
+    
+    return truncated_normal_lpdf(y | theta, sigma, 0, 1);
   }
 }
 
 data {
-  // the Degen and Tonhauser (2021) projection experiment:
+  // our replication of the Degen and Tonhauser (2021) projection experiment:
   int<lower=1> N_predicate;	      // number of predicates
   int<lower=1> N_context;	      // number of contexts
   int<lower=1> N_participant;	      // number of participants
@@ -35,7 +29,11 @@ data {
   int<lower=1, upper=N_context> context[N_data]; // map from data points to contexts
   int<lower=1, upper=N_participant> participant[N_data]; // map from data points to participants
 
-  // world knowledge log-odds means and standard deviations, obtained from the norming experiment:
+  // predicate log-odds means and standard deviations, obtained from the projection experiment:
+  vector[N_predicate] mu_nu;
+  vector<lower=0>[N_predicate] sigma_nu;
+  
+  // context log-odds means and standard deviations, obtained from the projection experiment:
   vector[N_context] mu_omega;
   vector<lower=0>[N_context] sigma_omega;
 }
@@ -47,7 +45,6 @@ parameters {
   
   // predicates:
   vector[N_predicate] z_nu; // by-predicate z-scores for the log-odds of projection
-  vector<lower=0>[N_predicate] sigma_nu; // by-predicate standard deviations for the log-odds of projection
 
   // contexts:
   vector[N_context] z_omega;   // by-context z-scores for the log-odds certainty
@@ -57,8 +54,8 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> tau_epsilon_nu;	// global scaling factor
-  vector[N_participant] z_nu;	// by-participant z-scores
+  real<lower=0> tau_epsilon_nu;	      // global scaling factor
+  vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
   // by-participant random intercepts for the log-odds certainty:
   real<lower=0> tau_epsilon_omega;	 // global scaling factor
@@ -72,9 +69,9 @@ transformed parameters {
   vector[N_predicate] nu;	// log-odds of projection
   vector[N_participant] epsilon_nu; // by-participant intercepts for the log-odds of projection
   vector<lower=0, upper=1>[N_data] v; // probability of projection
-  vector[N_context] omega; // log-odds certainty
+  vector[N_context] omega;	      // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
-  vector<lower=0, upper=1>[N_data] w; // certainty on the unit interval
+  vector<lower=0, upper=1>[N_data] w;  // certainty on the unit interval
 
   // 
   // DEFINITIONS
@@ -82,7 +79,7 @@ transformed parameters {
   
   // non-centered parameterization of the log-odds of projection:
   for (i in 1:N_predicate) {
-    nu[i] = sigma_nu[i] * z_nu[i];
+    nu[i] = mu_nu[i] + sigma_nu[i] * z_nu[i];
   }
 
   // non-centered parameterization of the log-odds certainty:
@@ -108,7 +105,6 @@ model {
   
   // predicates:
   z_nu ~ normal(0, 1);
-  sigma_nu ~ exponential(1);
 
   // contexts:
   z_omega ~ normal(0, 1);
@@ -143,7 +139,7 @@ model {
 }
 
 generated quantities {
-  vector[N_data] ll;	  // log-likelihoods (needed for WAIC/PSIS calculations)
+  vector[N_data] ll; // log-likelihoods (needed for WAIC/PSIS calculations)
   
   // definition:
   for (i in 1:N_data) {

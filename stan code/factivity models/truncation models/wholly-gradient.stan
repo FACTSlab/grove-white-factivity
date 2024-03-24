@@ -14,8 +14,7 @@ functions {
 		       ) {
     real theta = predicate + (1 - predicate) * world;
     
-    return truncated_normal_lpdf(y | theta, sigma, 0, 1);
-    
+    return truncated_normal_lpdf(y | theta, sigma, 0, 1);   
   }
 }
 
