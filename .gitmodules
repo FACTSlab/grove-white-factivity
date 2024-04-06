@@ -1,0 +1,3 @@
+[submodule "projective-probability"]
+	path = projective-probability
+	url = https://github.com/judith-tonhauser/projective-probability
