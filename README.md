@@ -13,4 +13,5 @@ You will need to install `cmdstanr`.
 ### The norming models
 
 Fit the norming-gradient model:
+
 ```Rscript r\ files/norming\ models/truncation\ models/norming-gradient.r```
