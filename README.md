@@ -8,10 +8,31 @@ The modeling pipeline is described below.
 ## The modeling pipeline
 
 All scripts should be run from this directory.
-You will need to install `cmdstanr`.
+You will need to install `cmdstanr` to fit the models.
+You should also install `loo` if you want to compare the WAIC scores of the resulting fits.
 
 ### The norming models
 
-Fit the norming-gradient model:
+(1) Fit the norming-gradient model:
+	
+	Rscript r\ files/norming\ models/truncation\ models/norming-gradient.r
+	
+(2) Fit the norming-discrete model (or skip to step (3)):
 
-```Rscript r\ files/norming\ models/truncation\ models/norming-gradient.r```
+	Rscript r\ files/norming\ models/truncation\ models/norming-discrete.r
+
+At this point, you can check the ELPDs of the norming-gradient and norming-discrete models in R:
+
+	R
+	>>> norming_gradient <- readRDS("r files/norming models/truncation models/results/norming-gradient.rds")
+	>>> norming_discrete <- readRDS("r files/norming models/truncation models/results/norming-discrete.rds")
+	>>> ll_ng <- norming_gradient$draws("ll")
+	>>> ll_nd <- norming_discrete$draws("ll")
+	>>> library(loo)
+	>>> waic_ng <- waic(ll_ng)
+	>>> waic_nd <- waic(ll_nd)
+	>>> loo_compare(waic_ng,waic_nd)
+
+(3) Extract the posterior item log-odds means and standard deviations from the norming-gradient model:
+	
+	Rscript r\ files/norming\ models/truncation\ models/posteriors.r
