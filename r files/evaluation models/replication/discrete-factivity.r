@@ -6,32 +6,32 @@ options(mc.cores=parallel::detectCores());
 output_path <- "r files/factivity models/truncation models/results"
 ## adjust as desired.
 
-## the directory where your norming files are saved:
-norming_path <- "r files/norming models/truncation models/results"
-## adjust as desired.
-
 ## preprocessing:
-source("r files/preprocessing/degen_tonhauser_projection.r");
+replication <- read.csv("data/replication/replication.csv")
 
 ## global stuff...
 
 ## fixed effects levels:
-N_predicate <- length(unique(projection$predicate))
-N_context <- length(unique(projection$context))
+N_predicate <- length(unique(replication$predicate))
+N_context <- length(unique(replication$context))
 
 ## random effects levels:
-N_participant <- length(unique(projection$participant))
+N_participant <- length(unique(replication$participant))
 
 ## individual experiments...
 
-## projection data:
-N_data <- nrow(projection)
-predicate <- projection$predicate_number
-context <- projection$context_number
-participant <- projection$participant
-y <- projection$response
-mu_omega <- readRDS(paste(norming_path,"mu_omega.rds",sep=""))
-sigma_omega <- readRDS(paste(norming_path,"sigma_omega.rds",sep=""))
+## replication data:
+N_data <- nrow(replication)
+predicate <- replication$predicate_number
+context <- replication$context_number
+participant <- replication$participant
+y <- replication$response
+
+## discrete-factivity model posteriors:
+mu_nu <- readRDS(paste(factivity_path,"discrete-factivity_mu_nu.rds",sep=""))
+sigma_nu <- readRDS(paste(factivity_path,"discrete-factivity_sigma_nu.rds",sep=""))
+mu_omega <- readRDS(paste(factivity_path,"discrete-factivity_mu_omega.rds",sep=""))
+sigma_omega <- readRDS(paste(factivity_path,"discrete-factivity_sigma_omega.rds",sep=""))
 
 data <- list(
     N_predicate=N_predicate,
@@ -42,11 +42,13 @@ data <- list(
     context=context,
     participant=participant,
     y=y,
+    mu_nu=mu_nu,
+    sigma_nu=sigma_nu,
     mu_omega=mu_omega,
     sigma_omega=sigma_omega
 );
 
-discrete_factivity_path <- file.path("stan code/factivity models/truncation models","discrete_factivity.stan");
+discrete_factivity_path <- file.path("stan code/evaluation models/replication","discrete_factivity.stan");
 
 discrete_factivity <- cmdstan_model(stan_file=discrete_factivity_path)
 

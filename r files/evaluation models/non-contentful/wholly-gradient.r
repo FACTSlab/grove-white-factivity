@@ -2,51 +2,53 @@ library(cmdstanr)
 options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE) # Uncomment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
+## choose whether bleached or templatic:
+which <- "bleached"
+## which <- "templatic"
+
 ## the directory where your output files will be saved:
-output_path <- "r files/factivity models/truncation models/results"
+output_path <- paste("r files/evaluation models/non-contentful/results-",which,sep="")
 ## adjust as desired.
 
-## the directory where your norming files are saved:
-norming_path <- "r files/norming models/truncation models/results"
+## the directory where your factivity files are saved:
+factivity_path <- "r files/factivity models/truncation models/results"
 ## adjust as desired.
 
 ## preprocessing:
-source("r files/preprocessing/degen_tonhauser_projection.r");
+non_contentful <- read.csv(paste("data/",which,"/",which,".csv",sep="")
 
 ## global stuff...
 
 ## fixed effects levels:
-N_predicate <- length(unique(projection$predicate))
-N_context <- length(unique(projection$context))
+N_predicate <- length(unique(non_contentful$predicate))
 
 ## random effects levels:
-N_participant <- length(unique(projection$participant))
+N_participant <- length(unique(non_contentful$participant))
 
 ## individual experiments...
 
-## projection data:
-N_data <- nrow(projection)
-predicate <- projection$predicate_number
-context <- projection$context_number
-participant <- projection$participant
-y <- projection$response
-mu_omega <- readRDS(paste(norming_path,"mu_omega.rds",sep=""))
-sigma_omega <- readRDS(paste(norming_path,"sigma_omega.rds",sep=""))
+## non-contentful data:
+N_data <- nrow(non_contentful)
+predicate <- non_contentful$predicate_number
+participant <- non_contentful$participant
+y <- non_contentful$response
+
+## wholly-gradient model posteriors
+mu_nu <- readRDS(paste(factivity_path,"wholly-gradient_mu_nu.rds",sep=""))
+sigma_nu <- readRDS(paste(factivity_path,"wholly-gradient_sigma_nu.rds",sep=""))
 
 data <- list(
     N_predicate=N_predicate,
-    N_context=N_context,
     N_participant=N_participant,
     N_data=N_data,
     predicate=predicate,
-    context=context,
     participant=participant,
     y=y,
-    mu_omega=mu_omega,
-    sigma_omega=sigma_omega
+    mu_nu=mu_nu,
+    sigma_nu=sigma_nu
 );
 
-wholly_gradient_path <- file.path("stan code/factivity models/truncation models","wholly_gradient.stan");
+wholly_gradient_path <- file.path("stan code/evaluation models/non-contentful","wholly_gradient.stan");
 
 wholly_gradient <- cmdstan_model(stan_file=wholly_gradient_path)
 
