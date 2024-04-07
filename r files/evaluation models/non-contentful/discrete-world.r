@@ -1,6 +1,6 @@
 library(cmdstanr)
 options(mc.cores=parallel::detectCores());
-## cmdstanr::install_cmdstan(overwrite=TRUE) # Uncomment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
+## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## choose whether bleached or templatic:
 which <- "bleached"

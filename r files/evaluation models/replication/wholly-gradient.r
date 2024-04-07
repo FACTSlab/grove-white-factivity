@@ -1,6 +1,6 @@
 library(cmdstanr)
 options(mc.cores=parallel::detectCores());
-## cmdstanr::install_cmdstan(overwrite=TRUE) # Uncomment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
+## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
 output_path <- "r files/factivity models/truncation models/results"
@@ -59,8 +59,8 @@ fit_wholly_gradient <- wholly_gradient$sample(
                                            seed=1337,
                                            chains=4,
                                            parallel_chains=4,
-                                           iter_warmup=12000,
-                                           iter_sampling=12000,
+                                           iter_warmup=24000,
+                                           iter_sampling=24000,
                                            adapt_delta=0.99,
                                            output_dir=output_path
                                        );
