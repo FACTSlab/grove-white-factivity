@@ -7,6 +7,10 @@ The modeling pipeline is described below.
 
 ## The modeling pipeline
 
+All scripts should be run from this directory.
+You will need to install `cmdstanr`.
+
 ### The norming models
 
-From this directory, run
+Fit the norming-gradient model:
+```Rscript r\ files/norming\ models/truncation\ models/norming-gradient.r```
