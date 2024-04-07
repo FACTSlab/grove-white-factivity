@@ -2,7 +2,9 @@
 
 This repository contains the data and Stan code associated with [Factivity, presupposition projection, and the role of discrete knowledge in gradient inference judgments](https://ling.auf.net/lingbuzz/007450) by [Julian Grove](https://juliangrove.github.io/) and [Aaron Steven White](http://aaronstevenwhite.io/).
 We also include the data from [Degen and Tonhauser 2021](https://direct.mit.edu/opmi/article/doi/10.1162/opmi_a_00042/106927/Prior-Beliefs-Modulate-Projection), described in the paper, as a submodule.
+
 To properly clone this repository, you should do `git clone --recurse-submodules git@github.com:FACTSlab/grove-white-factivity.git`.
+
 The modeling pipeline is described below.
 
 ## The modeling pipeline
@@ -16,6 +18,8 @@ You should also install `loo` if you want to compare the WAIC scores of the resu
 (1) Fit the norming-gradient model:
 	
 	Rscript r\ files/norming\ models/truncation\ models/norming-gradient.r
+
+Make sure to uncomment line 3 of this R file if you are running `cmdstanr` for the first time.
 	
 (2) Fit the norming-discrete model (or skip to step (3)):
 
@@ -23,16 +27,55 @@ You should also install `loo` if you want to compare the WAIC scores of the resu
 
 At this point, you can check the ELPDs of the norming-gradient and norming-discrete models in R:
 
-	R
-	>>> norming_gradient <- readRDS("r files/norming models/truncation models/results/norming-gradient.rds")
-	>>> norming_discrete <- readRDS("r files/norming models/truncation models/results/norming-discrete.rds")
-	>>> ll_ng <- norming_gradient$draws("ll")
-	>>> ll_nd <- norming_discrete$draws("ll")
-	>>> library(loo)
-	>>> waic_ng <- waic(ll_ng)
-	>>> waic_nd <- waic(ll_nd)
-	>>> loo_compare(waic_ng,waic_nd)
+	norming_gradient <- readRDS("r files/norming models/truncation models/results/norming-gradient.rds")
+	norming_discrete <- readRDS("r files/norming models/truncation models/results/norming-discrete.rds")
+	ll_ng <- norming_gradient$draws("ll")
+	ll_nd <- norming_discrete$draws("ll")
+	library(loo)
+	waic_ng <- waic(ll_ng)
+	waic_nd <- waic(ll_nd)
+	loo_compare(waic_ng,waic_nd)
 
 (3) Extract the posterior item log-odds means and standard deviations from the norming-gradient model:
 	
 	Rscript r\ files/norming\ models/truncation\ models/posteriors.r
+
+### The factivity models
+
+(4) Fit the discrete-factivity model:
+
+	Rscript r\ files/factivity\ models/truncation\ models/discrete-factivity.r
+	
+(5) Fit the wholly-gradient model:
+
+	Rscript r\ files/factivity\ models/truncation\ models/wholly-gradient.r
+	
+(6) Fit the discrete-world model:
+
+	Rscript r\ files/factivity\ models/truncation\ models/discrete-world.r
+	
+(7) Fit the wholly-discrete model:
+
+	Rscript r\ files/factivity\ models/truncation\ models/wholly-discrete.r
+	
+	
+You can now check the ELPDs of all four models in R:
+
+	discrete_factivity <- readRDS("r files/factivity models/truncation models/results/discrete-factivity.rds")
+	wholly_gradient <- readRDS("r files/factivity models/truncation models/results/wholly-gradient.rds")
+	discrete_world <- readRDS("r files/factivity models/truncation models/results/discrete-world.rds")
+	wholly_discrete <- readRDS("r files/factivity models/truncation models/results/wholly-discrete.rds")
+	ll_df <- discrete_factivity$draws("ll")
+	ll_wg <- wholly_gradient$draws("ll")
+	ll_dw <- discrete_world$draws("ll")
+	ll_wd <- wholly_discrete$draws("ll")
+	library(loo)
+	waic_df <- waic(ll_df)
+	waic_wg <- waic(ll_wg)
+	waic_dw <- waic(ll_dw)
+	waic_wd <- waic(ll_wd)
+	loo_compare(waic_df,waic_wg,waic_dw,waic_wd)
+
+(8) Extract the posterior log-odds means and standard deviations from the four models:
+
+	Rscript r\ files/factivity\ models/truncation\ models/posteriors.r
