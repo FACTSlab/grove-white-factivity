@@ -1,6 +1,3 @@
-library(dplyr);
-library(stringr);
-
 ## Degen and Tonhauser's norming data
 norming0 <- read.csv("projective-probability/results/1-prior/data/cd.csv")
 norming <- subset(norming0,item!="F1" & item!="F2")

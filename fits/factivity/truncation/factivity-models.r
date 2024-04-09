@@ -1,0 +1,86 @@
+library(cmdstanr);
+options(mc.cores=parallel::detectCores());
+## cmdstanr::install_cmdstan(overwrite=TRUE); # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
+
+## the directory where your output files will be saved:
+output_path <- "fits/factivity/truncation/results";
+## adjust as desired.
+
+## the directory where your norming files are saved:
+norming_path <- "fits/norming/truncation/results";
+## adjust as desired.
+
+## preprocessing:
+source("fits/preprocessing/degen_tonhauser_projection.r");
+
+## fixed effects levels:
+N_predicate <- length(unique(projection$predicate));
+N_context <- length(unique(projection$context));
+
+## random effects levels:
+N_participant <- length(unique(projection$participant));
+
+## individual experiments...
+
+## projection data:
+N_data <- nrow(projection);
+predicate <- projection$predicate_number;
+context <- projection$context_number;
+participant <- projection$participant;
+y <- projection$response;
+mu_omega <- readRDS(paste(norming_path,"mu_omega.rds",sep=""));
+sigma_omega <- readRDS(paste(norming_path,"sigma_omega.rds",sep=""));
+
+data <- list(
+    N_predicate=N_predicate,
+    N_context=N_context,
+    N_participant=N_participant,
+    N_data=N_data,
+    predicate=predicate,
+    context=context,
+    participant=participant,
+    y=y,
+    mu_omega=mu_omega,
+    sigma_omega=sigma_omega
+);
+
+model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
+
+## fit and save all four models:
+for (n in model_names) {
+    model_path <- file.path("models/factivity/truncation",paste(n,".stan",sep=""));
+    model <- cmdstan_model(stan_file=model_path);
+    model_fit <- model$sample(
+                           data=data,
+                           refresh=20,
+                           seed=1337,
+                           chains=4,
+                           parallel_chains=4,
+                           iter_warmup=12000,
+                           iter_sampling=12000,
+                           adapt_delta=0.99,
+                           output_dir=output_path
+                       );
+    saveRDS(model_fit,file=paste(output_path,n,".rds",sep=""),compress="xz");
+}
+
+## extract means and standard deviations for the posterior nus and omegas of all four models:
+for (n in models_names) {
+    model_fit <- readRDS(paste(outout_path,n,".rds",sep=""));
+    mu_nu <- rep(0,N_verb);
+    sigma_nu <- rep(0,N_verb);
+    for (i in 1:N_predicate) {
+        mu_nu[i] <- mean(model_fit$draws("nu")[,,i]);
+        sigma_nu[i] <- sd(model_fit$draws("nu")[,,i]);
+    }
+    saveRDS(mu_nu,paste(output_path,n,"mu_nu.rds",sep=""));
+    saveRDS(sigma_nu,paste(output_path,n,"sigma_nu.rds",sep=""));
+    mu_omega <- rep(0,N_context);
+    sigma_omega <- rep(0,N_context);
+    for (i in 1:N_context) {
+        mu_omega[i] <- mean(model_fit$draws("omega")[,,i]);
+        sigma_omega[i] <- sd(model_fit$draws("omega")[,,i]);
+    }
+    saveRDS(mu_omega,paste(output_path,n,"mu_omega.rds",sep=""));
+    saveRDS(sigma_omega,paste(output_path,n,"sigma_omega.rds",sep=""));
+}

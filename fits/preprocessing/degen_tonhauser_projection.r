@@ -1,6 +1,3 @@
-library(dplyr);
-library(stringr);
-
 ## Degen and Tonhauser's projection data
 projection0 <- read.csv("projective-probability/results/3-projectivity/data/cd.csv")
 projection <- subset(projection0,trigger_class!="control")
