@@ -32,7 +32,7 @@ You can check and compare the ELPDs of the norming-gradient and norming-discrete
 	}
 	loo_compare(model_waic);
 
-### The factivity
+### The factivity models
 
 To fit the four factivity models and extract their posteriors, run:
 
@@ -72,5 +72,5 @@ You can check and compare the ELPDs of the four model evaluations on the bleache
 To define the relevant directory, use the following, (un-)commenting as appropriate:
 
 	which <- "bleached";
-	## which <- "templatic";
+	# which <- "templatic";
 	model_dir <- paste("fits/evaluation/non-contentful/results-",which,sep="");
