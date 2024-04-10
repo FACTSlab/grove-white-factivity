@@ -46,23 +46,23 @@ data <- list(
 
 model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
-## ## fit and save all four models:
-## for (n in model_names) {
-##     model_path <- file.path("models/factivity/truncation",paste0(n,".stan"));
-##     model <- cmdstan_model(stan_file=model_path);
-##     model_fit <- model$sample(
-##                            data=data,
-##                            refresh=20,
-##                            seed=1337,
-##                            chains=4,
-##                            parallel_chains=4,
-##                            iter_warmup=12000,
-##                            iter_sampling=12000,
-##                            adapt_delta=0.99,
-##                            output_dir=output_dir
-##                        );
-##     saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
-## }
+## fit and save all four models:
+for (n in model_names) {
+    model_path <- file.path("models/factivity/truncation",paste0(n,".stan"));
+    model <- cmdstan_model(stan_file=model_path);
+    model_fit <- model$sample(
+                           data=data,
+                           refresh=20,
+                           seed=1337,
+                           chains=4,
+                           parallel_chains=4,
+                           iter_warmup=12000,
+                           iter_sampling=12000,
+                           adapt_delta=0.99,
+                           output_dir=output_dir
+                       );
+    saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
+}
 
 ## extract means and standard deviations for the posterior nus and omegas of all four models:
 for (n in model_names) {
