@@ -7,7 +7,7 @@ output_dir <- "fits/factivity/truncation/results/";
 ## adjust as desired.
 
 ## the directory where your norming files are saved:
-norming_path <- "fits/norming/truncation/results/";
+norming_dir <- "fits/norming/truncation/results/";
 ## adjust as desired.
 
 ## preprocessing:
@@ -26,8 +26,10 @@ predicate <- projection$predicate_number;
 context <- projection$context_number;
 participant <- projection$participant;
 y <- projection$response;
-mu_omega <- readRDS(paste0(norming_path,"mu_omega.rds"));
-sigma_omega <- readRDS(paste0(norming_path,"sigma_omega.rds"));
+
+## omega means and standard deviations from the norming-gradient model:
+mu_omega <- readRDS(paste0(norming_dir,"mu_omega.rds"));
+sigma_omega <- readRDS(paste0(norming_dir,"sigma_omega.rds"));
 
 data <- list(
     N_predicate=N_predicate,
@@ -71,14 +73,14 @@ for (n in models_names) {
         mu_nu[i] <- mean(model_fit$draws("nu")[,,i]);
         sigma_nu[i] <- sd(model_fit$draws("nu")[,,i]);
     }
-    saveRDS(mu_nu,paste0(output_dir,n,"mu_nu.rds"));
-    saveRDS(sigma_nu,paste0(output_dir,n,"sigma_nu.rds"));
+    saveRDS(mu_nu,paste0(output_dir,n,"_mu_nu.rds"));
+    saveRDS(sigma_nu,paste0(output_dir,n,"_sigma_nu.rds"));
     mu_omega <- rep(0,N_context);
     sigma_omega <- rep(0,N_context);
     for (i in 1:N_context) {
         mu_omega[i] <- mean(model_fit$draws("omega")[,,i]);
         sigma_omega[i] <- sd(model_fit$draws("omega")[,,i]);
     }
-    saveRDS(mu_omega,paste0(output_dir,n,"mu_omega.rds"));
-    saveRDS(sigma_omega,paste0(output_dir,n,"sigma_omega.rds"));
+    saveRDS(mu_omega,paste0(output_dir,n,"_mu_omega.rds"));
+    saveRDS(sigma_omega,paste0(output_dir,n,"_sigma_omega.rds"));
 }

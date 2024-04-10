@@ -61,7 +61,7 @@ To fit the four models of the replication data, run:
 
 You can check and compare the ELPDs of the four model evaluations in R as above, but instead use:
 
-	model_dir <- "fits/evaluation/replication/results";
+	model_dir <- "fits/evaluation/replication/results/";
 
 ### Modeling the bleached/templatic data
 
@@ -75,4 +75,4 @@ To define the relevant directory, use the following, (un-)commenting as appropri
 
 	which <- "bleached";
 	# which <- "templatic";
-	model_dir <- paste("fits/evaluation/non-contentful/results-",which,sep="");
+	model_dir <- paste0("fits/evaluation/non-contentful/results-",which,"/");

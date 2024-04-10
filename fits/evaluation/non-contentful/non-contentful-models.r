@@ -7,11 +7,11 @@ which <- "bleached";
 ## which <- "templatic";
 
 ## the directory where your output files will be saved:
-output_path <- paste0("fits/evaluation/non-contentful/results-",which);
+output_dir <- paste0("fits/evaluation/non-contentful/results-",which,"/");
 ## adjust as desired.
 
 ## the directory where your factivity files are saved:
-factivity_path <- "fits/factivity/truncation/results";
+factivity_dir <- "fits/factivity/truncation/results/";
 ## adjust as desired.
 
 ## preprocessing:
@@ -32,8 +32,8 @@ y <- non_contentful$response;
 model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
 for (n in model_names) {
-    mu_nu <- readRDS(paste0(factivity_path,n,"mu_nu.rds"));
-    sigma_nu <- readRDS(paste0(factivity_path,n,"sigma_nu.rds"));
+    mu_nu <- readRDS(paste0(factivity_dir,n,"_mu_nu.rds"));
+    sigma_nu <- readRDS(paste0(factivity_dir,n,"_sigma_nu.rds"));
     data <- list(
         N_predicate=N_predicate,
         N_participant=N_participant,
@@ -55,7 +55,7 @@ for (n in model_names) {
                            iter_warmup=12000,
                            iter_sampling=12000,
                            adapt_delta=0.99,
-                           output_dir=output_path
+                           output_dir=output_dir
                        );   
-    saveRDS(model_fit,file=paste0(output_path,n,".rds"),compress="xz");
+    saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
 }

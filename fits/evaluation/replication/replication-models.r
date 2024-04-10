@@ -3,11 +3,11 @@ options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
-output_path <- paste0("fits/evaluation/replication/results");
+output_dir <- paste0("fits/evaluation/replication/results/");
 ## adjust as desired.
 
 ## the directory where your factivity files are saved:
-factivity_path <- "fits/factivity/truncation/results";
+factivity_dir <- "fits/factivity/truncation/results/";
 ## adjust as desired.
 
 ## preprocessing:
@@ -30,8 +30,10 @@ y <- replication$response;
 model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
 for (n in model_names) {
-    mu_nu <- readRDS(paste0(factivity_path,n,"mu_nu.rds"));
-    sigma_nu <- readRDS(paste0(factivity_path,n,"sigma_nu.rds"));
+    mu_nu <- readRDS(paste0(factivity_dir,n,"_mu_nu.rds"));
+    sigma_nu <- readRDS(paste0(factivity_dir,n,"_sigma_nu.rds"));
+    mu_omega <- readRDS(paste0(factivity_dir,n,"_mu_omega.rds"));
+    sigma_omega <- readRDS(paste0(factivity_dir,n,"_sigma_omega.rds"));
     data <- list(
         N_predicate=N_predicate,
         N_context <- N_context,
@@ -42,7 +44,9 @@ for (n in model_names) {
         participant=participant,
         y=y,
         mu_nu=mu_nu,
-        sigma_nu=sigma_nu
+        sigma_nu=sigma_nu,
+        mu_omega=mu_omega,
+        sigma_omega=sigma_omega
     );
     model_path <- file.path("models/evaluation/replication",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
@@ -55,7 +59,7 @@ for (n in model_names) {
                            iter_warmup=24000,
                            iter_sampling=24000,
                            adapt_delta=0.99,
-                           output_dir=output_path
+                           output_dir=output_dir
                        );   
-    saveRDS(model_fit,file=paste0(output_path,n,".rds"),compress="xz");
+    saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
 }

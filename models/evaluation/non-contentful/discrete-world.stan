@@ -51,15 +51,15 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> tau_epsilon_nu;	      // global scaling factor
+  real<lower=0> sigma_epsilon_nu;	      // global scaling factor
   vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
   // by-participant random intercepts for the log-odds certainty:
-  real<lower=0> tau_epsilon_omega;	 // global scaling factor
+  real<lower=0> sigma_epsilon_omega;	 // global scaling factor
   vector[N_participant] z_epsilon_omega; // by-participant z-scores
 
   // jitter:
-  real<lower=0, upper=1> sigma_jitter; // jitter standard deviation
+  real<lower=0, upper=1> sigma_e; // jitter standard deviation
 }
 
 transformed parameters {
@@ -83,8 +83,8 @@ transformed parameters {
   omega = sigma_omega * z_omega;
 
   // non-centered parameterization of the participant random intercepts:
-  epsilon_nu = tau_epsilon_nu * z_epsilon_nu;
-  epsilon_omega = tau_epsilon_omega * z_epsilon_omega;
+  epsilon_nu = sigma_epsilon_nu * z_epsilon_nu;
+  epsilon_omega = sigma_epsilon_omega * z_epsilon_omega;
 
   // latent parameters before jittering is added:
   for (i in 1:N_data) {
@@ -111,9 +111,9 @@ model {
   //
   
   // by-participant random intercepts:
-  tau_epsilon_nu ~ exponential(1);
+  sigma_epsilon_nu ~ exponential(1);
   z_epsilon_nu ~ normal(0, 1);
-  tau_epsilon_omega ~ exponential(1);
+  sigma_epsilon_omega ~ exponential(1);
   z_epsilon_omega ~ normal(0, 1);
 
   
@@ -127,7 +127,7 @@ model {
 				y[i] |
 				v[i],
 				w[i],
-				sigma_jitter
+				sigma_e
 				);
     else
       target += negative_infinity();
@@ -144,7 +144,7 @@ generated quantities {
 			      y[i] |
 			      v[i],
 			      w[i],
-			      sigma_jitter
+			      sigma_e
 			      );
     else
       ll[i] = negative_infinity();

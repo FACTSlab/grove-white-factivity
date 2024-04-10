@@ -21,10 +21,10 @@ functions {
 
 data {
   // data from the the Degen and Tonhauser (2021) norming experiment:
-  int<lower=1> N_context;			 // number of contexts (items)
-  int<lower=1> N_participant;			 // number of participants
-  int<lower=1> N_data;				 // number of data points
-  vector<lower=0, upper=1>[N_data] y;		 // response (between 0 and 1)
+  int<lower=1> N_context;	      // number of contexts (items)
+  int<lower=1> N_participant;	      // number of participants
+  int<lower=1> N_data;		      // number of data points
+  vector<lower=0, upper=1>[N_data] y; // response (between 0 and 1)
   array[N_data] int<lower=1, upper=N_context> context; // map from data points to contexts
   array[N_data] int<lower=1, upper=N_participant> participant; // map from data points to participants
 }
@@ -43,11 +43,11 @@ parameters {
   //
   
   // by-participant random intercepts for the log-odds certainty:
-  real<lower=0> tau_epsilon_omega;	 // global scaling factor
+  real<lower=0> sigma_epsilon_omega;	 // global scaling factor
   vector[N_participant] z_epsilon_omega; // by-participant z-scores
 
   // jitter:
-  real<lower=0, upper=1> sigma_jitter; // jitter standard deviation 
+  real<lower=0, upper=1> sigma_e; // jitter standard deviation 
 }
 
 transformed parameters {
@@ -65,7 +65,7 @@ transformed parameters {
   }
 
   // non-centered parameterization of the participant random intercepts:
-  epsilon_omega = tau_epsilon_omega * z_epsilon_omega;
+  epsilon_omega = sigma_epsilon_omega * z_epsilon_omega;
 
   // latent parameter before jittering is added:
   for (i in 1:N_data) {
@@ -88,7 +88,7 @@ model {
   // 
   
   // by-participant random intercepts:
-  tau_epsilon_omega ~ exponential(1);
+  sigma_epsilon_omega ~ exponential(1);
   z_epsilon_omega ~ normal(0, 1);
 
 
@@ -101,7 +101,7 @@ model {
       target += likelihood_lpdf(
 				y[i] |
 				w[i],
-				sigma_jitter
+				sigma_e
 				);
     else
       target += negative_infinity();
@@ -117,7 +117,7 @@ generated quantities {
       ll[i] = likelihood_lpdf(
 			      y[i] |
 			      w[i],
-			      sigma_jitter
+			      sigma_e
 			      );
     else
       ll[i] = negative_infinity();
