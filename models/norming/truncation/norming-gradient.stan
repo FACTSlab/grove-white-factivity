@@ -11,18 +11,18 @@ functions {
 		       real world,
 		       real sigma
 		       ) {
-    return truncated_normal_lpdf(y | context, sigma, 0, 1);
+    return truncated_normal_lpdf(y | world, sigma, 0, 1);
   }
 }
 
 data {
   // data from the the Degen and Tonhauser (2021) norming experiment:
-  int<lower=1> N_context;			 // number of contexts (items)
-  int<lower=1> N_participant;			 // number of participants
-  int<lower=1> N_data;				 // number of data points
-  vector<lower=0, upper=1>[N_data] y;		 // response (between 0 and 1)
-  array int<lower=1, upper=N_context> context; // map from data points to contexts
-  array int<lower=1, upper=N_participant> participant; // map from data points to participants
+  int<lower=1> N_context;		       // number of contexts (items)
+  int<lower=1> N_participant;		       // number of participants
+  int<lower=1> N_data;			       // number of data points
+  vector<lower=0, upper=1>[N_data] y;	       // response (between 0 and 1)
+  array[N_data] int<lower=1, upper=N_context> context; // map from data points to contexts
+  array[N_data] int<lower=1, upper=N_participant> participant; // map from data points to participants
 }
 
 parameters {

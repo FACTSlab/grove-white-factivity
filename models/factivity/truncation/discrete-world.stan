@@ -27,9 +27,9 @@ data {
   int<lower=1> N_participant;	      // number of participants
   int<lower=1> N_data;		      // number of data points
   vector<lower=0, upper=1>[N_data] y; // response (between 0 and 1)
-  array int<lower=1, upper=N_predicate> predicate; // map from data points to predicates
-  array int<lower=1, upper=N_context> context; // map from data points to contexts
-  array int<lower=1, upper=N_participant> participant; // map from data points to participants
+  array[N_data] int<lower=1, upper=N_predicate> predicate; // map from data points to predicates
+  array[N_data] int<lower=1, upper=N_context> context; // map from data points to contexts
+  array[N_data] int<lower=1, upper=N_participant> participant; // map from data points to participants
 
   // world knowledge log-odds means and standard deviations, obtained from the norming experiment:
   vector[N_context] mu_omega;
@@ -53,8 +53,8 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> tau_epsilon_nu;	// global scaling factor
-  vector[N_participant] z_nu;	// by-participant z-scores
+  real<lower=0> tau_epsilon_nu;	      // global scaling factor
+  vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
   // by-participant random intercepts for the log-odds certainty:
   real<lower=0> tau_epsilon_omega;	 // global scaling factor

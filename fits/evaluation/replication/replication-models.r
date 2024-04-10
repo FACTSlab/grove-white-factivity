@@ -3,7 +3,7 @@ options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
-output_path <- paste("fits/evaluation/replication/results",sep="");
+output_path <- paste0("fits/evaluation/replication/results");
 ## adjust as desired.
 
 ## the directory where your factivity files are saved:
@@ -30,8 +30,8 @@ y <- replication$response;
 model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
 for (n in model_names) {
-    mu_nu <- readRDS(paste(factivity_path,n,"mu_nu.rds",sep=""));
-    sigma_nu <- readRDS(paste(factivity_path,n,"sigma_nu.rds",sep=""));
+    mu_nu <- readRDS(paste0(factivity_path,n,"mu_nu.rds"));
+    sigma_nu <- readRDS(paste0(factivity_path,n,"sigma_nu.rds"));
     data <- list(
         N_predicate=N_predicate,
         N_context <- N_context,
@@ -44,7 +44,7 @@ for (n in model_names) {
         mu_nu=mu_nu,
         sigma_nu=sigma_nu
     );
-    model_path <- file.path("models/evaluation/replication",paste(n,".stan",sep=""));
+    model_path <- file.path("models/evaluation/replication",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,
@@ -57,5 +57,5 @@ for (n in model_names) {
                            adapt_delta=0.99,
                            output_dir=output_path
                        );   
-    saveRDS(model_fit,file=paste(output_path,n,".rds",sep=""),compress="xz");
+    saveRDS(model_fit,file=paste0(output_path,n,".rds"),compress="xz");
 }

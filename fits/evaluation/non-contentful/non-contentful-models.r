@@ -7,7 +7,7 @@ which <- "bleached";
 ## which <- "templatic";
 
 ## the directory where your output files will be saved:
-output_path <- paste("fits/evaluation/non-contentful/results-",which,sep="");
+output_path <- paste0("fits/evaluation/non-contentful/results-",which);
 ## adjust as desired.
 
 ## the directory where your factivity files are saved:
@@ -15,7 +15,7 @@ factivity_path <- "fits/factivity/truncation/results";
 ## adjust as desired.
 
 ## preprocessing:
-non_contentful <- read.csv(paste("data/",which,"/",which,".csv",sep="");
+non_contentful <- read.csv(paste0("data/",which,"/",which,".csv");
 
 ## global stuff...
 
@@ -34,8 +34,8 @@ y <- non_contentful$response;
 model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
 for (n in model_names) {
-    mu_nu <- readRDS(paste(factivity_path,n,"mu_nu.rds",sep=""));
-    sigma_nu <- readRDS(paste(factivity_path,n,"sigma_nu.rds",sep=""));
+    mu_nu <- readRDS(paste0(factivity_path,n,"mu_nu.rds"));
+    sigma_nu <- readRDS(paste0(factivity_path,n,"sigma_nu.rds"));
     data <- list(
         N_predicate=N_predicate,
         N_participant=N_participant,
@@ -46,7 +46,7 @@ for (n in model_names) {
         mu_nu=mu_nu,
         sigma_nu=sigma_nu
     );
-    model_path <- file.path("models/evaluation/non-contentful",paste(n,".stan",sep=""));
+    model_path <- file.path("models/evaluation/non-contentful",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,
@@ -59,5 +59,5 @@ for (n in model_names) {
                            adapt_delta=0.99,
                            output_dir=output_path
                        );   
-    saveRDS(model_fit,file=paste(output_path,n,".rds",sep=""),compress="xz");
+    saveRDS(model_fit,file=paste0(output_path,n,".rds"),compress="xz");
 }

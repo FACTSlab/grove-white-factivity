@@ -30,8 +30,8 @@ data {
   int<lower=1> N_participant;	      // number of participants
   int<lower=1> N_data;		      // number of data points
   vector<lower=0, upper=1>[N_data] y; // response (between 0 and 1)
-  array int<lower=1, upper=N_predicate> predicate; // map from data points to predicates
-  array int<lower=1, upper=N_participant> participant; // map from data points to participants
+  array[N_data] int<lower=1, upper=N_predicate> predicate; // map from data points to predicates
+  array[N_data] int<lower=1, upper=N_participant> participant; // map from data points to participants
   
   // predicate log-odds means and standard deviations, obtained from the projection experiment:
   vector[N_predicate] mu_nu;

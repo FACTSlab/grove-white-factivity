@@ -3,7 +3,7 @@ options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE); # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
-output_path <- "models/norming/truncation/results";
+output_dir <- "fits/norming/truncation/results/";
 ## adjust as desired.
 
 ## preprocessing:
@@ -34,7 +34,7 @@ model_names <- c("norming-gradient","norming-discrete");
 
 ## fit and save both models:
 for (n in model_names) {
-    model_path <- file.path("models/norming/truncation",paste(n,".stan",sep=""));
+    model_path <- file.path("models/norming/truncation",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,
@@ -42,21 +42,21 @@ for (n in model_names) {
                            seed=1337,
                            chains=4,
                            parallel_chains=4,
-                           iter_warmup=12000,
-                           iter_sampling=12000,
+                           iter_warmup=6000,
+                           iter_sampling=6000,
                            adapt_delta=0.99,
-                           output_dir=output_path
+                           output_dir=output_dir
                        );
-    saveRDS(model_fit,file=paste(output_path,n,".rds",sep=""),compress="xz");
+    saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
 }
 
 ## extract means and standard deviations for the posterior omegas of the noming-gradient model:
-norming_gradient_fit <- readRDS(paste(output_path,"norming-gradient.rds",sep=""));
+norming_gradient_fit <- readRDS(paste0(output_dir,"norming-gradient.rds"));
 mu_omega <- rep(0,N_context);
 sigma_omega <- rep(0,N_context);
 for (i in 1:N_context) {
     mu_omega[i] <- mean(norming_gradient_fit$draws("omega")[,,i]);
     sigma_omega[i] <- sd(norming_gradient_fit$draws("omega")[,,i]);
 }
-saveRDS(mu_omega,paste(output_path,"mu_omega.rds",sep=""));
-saveRDS(sigma_omega,paste(output_path,"sigma_omega.rds",sep=""));
+saveRDS(mu_omega,paste0(output_dir,"mu_omega.rds"));
+saveRDS(sigma_omega,paste0(output_dir,"sigma_omega.rds"));

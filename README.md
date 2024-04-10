@@ -7,7 +7,9 @@ To properly clone this repository, you should do `git clone --recurse-submodules
 
 ## Installation
 
-Two R packages are required: [`cmdstanr`](https://mc-stan.org/cmdstanr/reference/cmdstanr-package.html) and [`loo`](https://cran.r-project.org/web/packages/loo/index.html).
+Two R packages are required:
+ - [`cmdstanr`](https://mc-stan.org/cmdstanr/reference/cmdstanr-package.html) (to fit the models)
+ - [`loo`](https://cran.r-project.org/web/packages/loo/index.html) (to analyze the results)
 
 ## The modeling pipeline
 
@@ -22,13 +24,13 @@ To fit the norming models and extract the posteriors of the norming-gradient mod
 You can check and compare the ELPDs of the norming-gradient and norming-discrete models in R:
 	
 	library(loo);
-	model_dir <- "fits/norming/truncation/results";
+	model_dir <- "fits/norming/truncation/results/";
 	model_names <- c("norming-gradient","norming-discrete");
 	model_waic <- list();
 	for (n in model_names) {
-		model_path <- paste(model_dir,n,".rds",sep="");
+		model_path <- paste0(model_dir,n,".rds");
 		model_fit <- readRDS(model_path);
-		model_waic <- c(model_waic,waic(model_fit$draws("ll")));
+		model_waic <- c(model_waic,list(waic(model_fit$draws("ll"))));
 	}
 	loo_compare(model_waic);
 
@@ -41,13 +43,13 @@ To fit the four factivity models and extract their posteriors, run:
 You can check and compare the ELPDs of the four models in R:
 	
 	library(loo);
-	model_dir <- "fits/factivity/truncation/results";
+	model_dir <- "fits/factivity/truncation/results/";
 	model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 	model_waic <- list();
 	for (n in model_names) {
-		model_path <- paste(model_dir,n,".rds",sep="");
+		model_path <- paste0(model_dir,n,".rds");
 		model_fit <- readRDS(model_path);
-		model_waic <- c(model_waic,waic(model_fit$draws("ll")));
+		model_waic <- c(model_waic,list(waic(model_fit$draws("ll"))));
 	}
 	loo_compare(model_waic);
 
