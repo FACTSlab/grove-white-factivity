@@ -36,7 +36,7 @@ for (n in model_names) {
     sigma_omega <- readRDS(paste0(factivity_dir,n,"_sigma_omega.rds"));
     data <- list(
         N_predicate=N_predicate,
-        N_context <- N_context,
+        N_context=N_context,
         N_participant=N_participant,
         N_data=N_data,
         predicate=predicate,
