@@ -15,7 +15,7 @@ factivity_dir <- "fits/factivity/truncation/results/";
 ## adjust as desired.
 
 ## preprocessing:
-non_contentful <- read.csv(paste0("data/",which,"/",which,".csv");
+non_contentful <- read.csv(paste0("data/",which,"/",which,".csv"));
 
 ## fixed effects levels:
 N_predicate <- length(unique(non_contentful$predicate));
