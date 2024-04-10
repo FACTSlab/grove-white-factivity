@@ -11,7 +11,7 @@ factivity_path <- "fits/factivity/truncation/results";
 ## adjust as desired.
 
 ## preprocessing:
-replication <- read.csv("data/replication/replication.csv")
+replication <- read.csv("data/replication/replication.csv");
 
 ## fixed effects levels:
 N_predicate <- length(unique(replication$predicate));

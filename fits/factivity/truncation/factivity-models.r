@@ -20,8 +20,6 @@ N_context <- length(unique(projection$context));
 ## random effects levels:
 N_participant <- length(unique(projection$participant));
 
-## individual experiments...
-
 ## projection data:
 N_data <- nrow(projection);
 predicate <- projection$predicate_number;
