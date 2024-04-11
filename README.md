@@ -10,6 +10,8 @@ To properly clone this repository, you should do `git clone --recurse-submodules
 Two R packages are required:
  - [`cmdstanr`](https://mc-stan.org/cmdstanr/reference/cmdstanr-package.html) (to fit the models)
  - [`loo`](https://cran.r-project.org/web/packages/loo/index.html) (to analyze the results)
+ 
+If you use [Nix](https://nixos.org/), you can install R and the relevant packages by running `nix-shell` in this directory.
 
 ## The modeling pipeline
 
