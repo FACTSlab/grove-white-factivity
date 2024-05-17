@@ -42,8 +42,8 @@ for (n in model_names) {
                            seed=1337,
                            chains=4,
                            parallel_chains=4,
-                           iter_warmup=6000,
-                           iter_sampling=6000,
+                           iter_warmup=3000,
+                           iter_sampling=3000,
                            adapt_delta=0.99,
                            output_dir=output_dir
                        );

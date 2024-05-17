@@ -3,7 +3,7 @@ options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
-output_dir <- paste0("fits/evaluation/replication/results/");
+output_dir <- "fits/evaluation/replication/results/";
 ## adjust as desired.
 
 ## the directory where your factivity files are saved:
@@ -56,8 +56,9 @@ for (n in model_names) {
                            seed=1337,
                            chains=4,
                            parallel_chains=4,
-                           iter_warmup=24000,
-                           iter_sampling=24000,
+                           iter_warmup=45000,
+                           iter_sampling=45000,
+                           thin=3,
                            adapt_delta=0.99,
                            output_dir=output_dir
                        );   
