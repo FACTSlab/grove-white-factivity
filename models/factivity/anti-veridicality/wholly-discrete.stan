@@ -110,7 +110,7 @@ transformed parameters {
   // latent parameters before jittering is added:
   for (i in 1:N_data) {
     v[i] = inv_logit(nu[predicate[i]] + epsilon_nu[participant[i]]);
-    a[i] = inv_logit(alpha[predicate[i]] + epsilon_alpha[participant[i]])
+    a[i] = inv_logit(alpha[predicate[i]] + epsilon_alpha[participant[i]]);
     w[i] = inv_logit(omega[context[i]] + epsilon_omega[participant[i]]);
   }
 }
