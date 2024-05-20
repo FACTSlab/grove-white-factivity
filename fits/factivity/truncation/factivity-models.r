@@ -48,7 +48,7 @@ model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly
 
 ## fit and save all four models:
 for (n in model_names) {
-    model_path <- file.path("models/factivity/truncation",paste0(n,".stan"));
+    model_path <- file.path("models/factivity/truncation/",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,

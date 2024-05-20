@@ -34,7 +34,7 @@ model_names <- c("norming-gradient","norming-discrete");
 
 ## fit and save both models:
 for (n in model_names) {
-    model_path <- file.path("models/norming/truncation",paste0(n,".stan"));
+    model_path <- file.path("models/norming/truncation/",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,

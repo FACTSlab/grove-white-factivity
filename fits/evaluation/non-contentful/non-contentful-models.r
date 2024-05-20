@@ -44,7 +44,7 @@ for (n in model_names) {
         mu_nu=mu_nu,
         sigma_nu=sigma_nu
     );
-    model_path <- file.path("models/evaluation/non-contentful",paste0(n,".stan"));
+    model_path <- file.path("models/evaluation/non-contentful/",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
     model_fit <- model$sample(
                            data=data,
