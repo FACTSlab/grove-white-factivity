@@ -21,7 +21,7 @@ functions {
 			   truncated_normal_lpdf(y | 0, sigma, 0, 1),
 			   log_mix(
 				   world,
-				   truncated_normal_lpdf(y | 1, sigma, 0, 1)
+				   truncated_normal_lpdf(y | 1, sigma, 0, 1),
 				   truncated_normal_lpdf(y | 0, sigma, 0, 1)
 				   )
 			   )
