@@ -5,7 +5,7 @@ functions {
 		   normal_lcdf(a | mu, sigma));
   }
   
-  // the wholly-discrete model likelihood:
+  // the discrete-factivity model likelihood:
   real likelihood_lpdf(
 		       real y,
 		       real predicate,
@@ -19,11 +19,7 @@ functions {
 		   log_mix(
 			   anti,
 			   truncated_normal_lpdf(y | 0, sigma, 0, 1),
-			   log_mix(
-				   world,
-				   truncated_normal_lpdf(y | 1, sigma, 0, 1),
-				   truncated_normal_lpdf(y | 0, sigma, 0, 1)
-				   )
+			   truncated_normal_lpdf(y | world, sigma, 0, 1)
 			   )
 		   );
   }
@@ -65,7 +61,7 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> sigma_epsilon_nu;	      // global scaling factor
+  real<lower=0> sigma_epsilon_nu;     // global scaling factor
   vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
   // by-participant random intercepts for the log-odds of an anti-veridicality inference
@@ -86,10 +82,10 @@ transformed parameters {
   vector<lower=0, upper=1>[N_data] v; // probability of projection
   vector[N_predicate] alpha;	// log-odds of an anti-veridicality inference
   vector[N_participant] epsilon_alpha; // by-participant intercepts for the log-odds of an anti-veridicality inference
-  vector<lower=0, upper=1>[N_data] a;  // probability of an anti-veridicality inference
-  vector[N_context] omega; // log-odds certainty
+  vector<lower=0, upper=1>[N_data] a; // probability of an anti-veridicality inference
+  vector[N_context] omega;	      // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
-  vector<lower=0, upper=1>[N_data] w; // certainty on the unit interval
+  vector<lower=0, upper=1>[N_data] w;  // certainty on the unit interval
 
   // 
   // DEFINITIONS

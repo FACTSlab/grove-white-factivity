@@ -55,7 +55,7 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> sigma_epsilon_nu;	      // global scaling factor
+  real<lower=0> sigma_epsilon_nu;     // global scaling factor
   vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
   // by-participant random intercepts for the log-odds of an anti-veridicality inference
@@ -77,9 +77,9 @@ transformed parameters {
   vector[N_predicate] alpha;	// log-odds of an anti-veridicality inference
   vector[N_participant] epsilon_alpha; // by-participant intercepts for the log-odds of an anti-veridicality inference
   vector<lower=0, upper=1>[N_data] a;  // probability of an anti-veridicality inference
-  vector[N_context] omega; // log-odds certainty
+  vector[N_context] omega;	       // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
-  vector<lower=0, upper=1>[N_data] w; // certainty on the unit interval
+  vector<lower=0, upper=1>[N_data] w;  // certainty on the unit interval
 
   // 
   // DEFINITIONS
