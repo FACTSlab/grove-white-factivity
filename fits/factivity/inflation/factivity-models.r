@@ -63,24 +63,3 @@ for (n in model_names) {
                        );
     saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
 }
-
-## extract means and standard deviations for the posterior nus and omegas of all four models:
-for (n in model_names) {
-    model_fit <- readRDS(paste0(output_dir,n,".rds"));
-    mu_nu <- rep(0,N_predicate);
-    sigma_nu <- rep(0,N_predicate);
-    for (i in 1:N_predicate) {
-        mu_nu[i] <- mean(model_fit$draws("nu")[,,i]);
-        sigma_nu[i] <- sd(model_fit$draws("nu")[,,i]);
-    }
-    saveRDS(mu_nu,paste0(output_dir,n,"_mu_nu.rds"));
-    saveRDS(sigma_nu,paste0(output_dir,n,"_sigma_nu.rds"));
-    mu_omega <- rep(0,N_context);
-    sigma_omega <- rep(0,N_context);
-    for (i in 1:N_context) {
-        mu_omega[i] <- mean(model_fit$draws("omega")[,,i]);
-        sigma_omega[i] <- sd(model_fit$draws("omega")[,,i]);
-    }
-    saveRDS(mu_omega,paste0(output_dir,n,"_mu_omega.rds"));
-    saveRDS(sigma_omega,paste0(output_dir,n,"_sigma_omega.rds"));
-}
