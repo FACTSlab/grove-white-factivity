@@ -24,11 +24,18 @@ functions {
   real likelihood_lpdf(
 		       real y,
 		       real world,
+		       real eta,
 		       real k1,
 		       real k2,
 		       real phi
 		       ) {
-    return ordered_beta_lpdf(y | k1, k2, world, phi);
+    real mu_1 = eta;
+    real mu_0 = - eta;
+    return log_mix(
+		   inv_logit(world),
+		   ordered_beta_lpdf(y | k1, k2, mu_1, phi),
+		   ordered_beta_lpdf(y | k1, k2, mu_0, phi)
+		   );
   }
 }
 
@@ -67,7 +74,8 @@ parameters {
   vector[N_participant] z_epsilon_k2; // by-participant z-scores
   
   // likelihood parameters:
-  real<lower=0> log_k;		// ordered beta cutpoints absolute value
+  real<lower=0> log_k;			// ordered beta cutpoints absolute value
+  real<lower=0> eta; 			// absolute value of the 0/1 component
   real<lower=0> phi;		// beta sample size
 }
 
@@ -136,6 +144,7 @@ model {
 
   // parameters:
   log_k ~ normal(log(4), 1);
+  eta ~ normal(1.5, 1);
   phi ~ exponential(0.1);
   
   // definition:
@@ -144,6 +153,7 @@ model {
       target += likelihood_lpdf(
 				y[i] |
 				w[i],
+				eta,
 				k1[participant[i]],
 				k2[participant[i]],
 				phi
@@ -162,6 +172,7 @@ generated quantities {
       ll[i] = likelihood_lpdf(
 			      y[i] |
 			      w[i],
+			      eta,
 			      k1[participant[i]],
 			      k2[participant[i]],
 			      phi

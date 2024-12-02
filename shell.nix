@@ -1,4 +1,4 @@
-let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-23.11.tar.gz);
+let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-24.05.tar.gz);
 in
 { pkgs ? import nixpkgs_source {
     inherit system;

@@ -24,14 +24,13 @@ functions {
   real likelihood_lpdf(
 		       real y,
 		       real predicate,
-		       real anti,
 		       real world,
 		       real k1,
 		       real k2,
 		       real phi
 		       ) {
     real target_prob = inv_logit(predicate) +
-      (1 - inv_logit(predicate)) * (1 - inv_logit(anti)) * inv_logit(world);
+      (1 - inv_logit(predicate)) * inv_logit(world);
     
     return ordered_beta_lpdf(y | k1, k2, target_prob, phi);
   }
@@ -62,10 +61,6 @@ parameters {
   vector<lower=0>[N_predicate] sigma_nu; // by-predicate standard deviations for the log-odds of projection
   vector[N_predicate] z_nu; // by-predicate z-scores for the log-odds of projection
 
-  // anti-veridicality parameters:
-  vector<lower=0>[N_predicate] sigma_alpha; // by-predicate standard deviations for the log-odds of an anti-veridicality entailment
-  vector[N_predicate] z_alpha; // by-predicate z-scores for the log-odds of an anti-veridicality entailment
-  
   // contexts:
   vector[N_context] z_omega;   // by-context z-scores for the log-odds certainty
 
@@ -75,24 +70,21 @@ parameters {
   // 
   
   // by-participant random intercepts for the log-odds of projection:
-  real<lower=0> tau_epsilon_nu;	      // global scaling factor
+  real<lower=0> sigma_epsilon_nu;	      // global scaling factor
   vector[N_participant] z_epsilon_nu; // by-participant z-scores
 
-  real<lower=0> tau_epsilon_alpha;
-  vector[N_participant] z_epsilon_alpha;
-
   // by-participant random intercepts for the log-odds certainty:
-  real<lower=0> tau_epsilon_omega;	 // global scaling factor
+  real<lower=0> sigma_epsilon_omega;	 // global scaling factor
   vector[N_participant] z_epsilon_omega; // by-participant z-scores
 
   // by-participant random intercepts for the log cutpoint absolute value
-  real<lower=0> tau_epsilon_k1;	     // global scaling factor
+  real<lower=0> sigma_epsilon_k1;	     // global scaling factor
   vector[N_participant] z_epsilon_k1; // by-participant z-scores
-  real<lower=0> tau_epsilon_k2;	     // global scaling factor
+  real<lower=0> sigma_epsilon_k2;	     // global scaling factor
   vector[N_participant] z_epsilon_k2; // by-participant z-scores
 
   // likelihood parameters:
-  real log_k;		      // ordered beta cutpoint log absolute value
+  real<lower=0> log_k;		      // ordered beta cutpoint log absolute value
   real<lower=0> phi;	      // beta sample size
 }
 
@@ -100,9 +92,6 @@ transformed parameters {
   vector[N_predicate] nu;	// log-odds of projection
   vector[N_participant] epsilon_nu; // by-participant intercepts for the log-odds of projection
   vector[N_data] v;  // log-odds of projection with participant intercepts added
-  vector[N_predicate] alpha;	// log-odds of anti-veridicality
-  vector[N_participant] epsilon_alpha; // by-participant intercepts for the log-odds of anti-veridicality
-  vector[N_data] a; // log-odds of anti-veridicality with participant intercepts added
   vector[N_context] omega;	// log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
   vector[N_data] w;	 // log-odds certainty with participant intercepts added
@@ -118,7 +107,6 @@ transformed parameters {
   // non-centered parameterization of the log-odds of projection:
   for (i in 1:N_predicate) {
     nu[i] = sigma_nu[i] * z_nu[i];
-    alpha[i] = sigma_alpha[i] * z_alpha[i];
   }
 
   // non-centered parameterization of the log-odds certainty:
@@ -127,11 +115,10 @@ transformed parameters {
   }
 
   // non-centered parameteriziation of the participant random intercepts:
-  epsilon_nu = tau_epsilon_nu * z_epsilon_nu;
-  epsilon_alpha = tau_epsilon_alpha * z_epsilon_alpha;
-  epsilon_omega = tau_epsilon_omega * z_epsilon_omega;
-  epsilon_k1 = tau_epsilon_k1 * z_epsilon_k1;
-  epsilon_k2 = tau_epsilon_k2 * z_epsilon_k2;
+  epsilon_nu = sigma_epsilon_nu * z_epsilon_nu;
+  epsilon_omega = sigma_epsilon_omega * z_epsilon_omega;
+  epsilon_k1 = sigma_epsilon_k1 * z_epsilon_k1;
+  epsilon_k2 = sigma_epsilon_k2 * z_epsilon_k2;
 
   // by-participant cutpoint absolute values:
   for (i in 1:N_participant) {
@@ -142,7 +129,6 @@ transformed parameters {
   // latent parameters before jittering is added:
   for (i in 1:N_data) {
     v[i] = nu[predicate[i]] + epsilon_nu[participant[i]];
-    a[i] = alpha[predicate[i]] + epsilon_alpha[participant[i]];
     w[i] = omega[context[i]] + epsilon_omega[participant[i]];
   }
 }
@@ -155,8 +141,6 @@ model {
   // predicates:
   sigma_nu ~ exponential(1);
   z_nu ~ normal(0, 1);
-  sigma_alpha ~ exponential(1);
-  z_alpha ~ normal(0, 1);
 
   // contexts:
   z_omega ~ normal(0, 1);
@@ -167,15 +151,13 @@ model {
   //
   
   // by-participant random intercepts:
-  tau_epsilon_nu ~ exponential(1);
+  sigma_epsilon_nu ~ exponential(1);
   z_epsilon_nu ~ normal(0, 1);
-  tau_epsilon_alpha ~ exponential(1);
-  z_epsilon_alpha ~ normal(0, 1);
-  tau_epsilon_omega ~ exponential(1);
+  sigma_epsilon_omega ~ exponential(1);
   z_epsilon_omega ~ normal(0, 1);
-  tau_epsilon_k1 ~ exponential(1);
+  sigma_epsilon_k1 ~ exponential(1);
   z_epsilon_k1 ~ normal(0, 1);
-  tau_epsilon_k2 ~ exponential(1);
+  sigma_epsilon_k2 ~ exponential(1);
   z_epsilon_k2 ~ normal(0, 1);
 
 
@@ -193,7 +175,6 @@ model {
       target += likelihood_lpdf(
 				y[i] |
 				v[i],
-				a[i],
 				w[i],
 				k1[participant[i]],
 				k2[participant[i]],
@@ -213,7 +194,6 @@ generated quantities {
       ll[i] = likelihood_lpdf(
 			      y[i] |
 			      v[i],
-			      a[i],
 			      w[i],
 			      k1[participant[i]],
 			      k2[participant[i]],

@@ -30,7 +30,7 @@ data <- list(
     y=y
 );
 
-model_names <- "norming-gradient";
+model_names <- c("norming-gradient","norming-discrete");
 
 ## fit and save both models:
 for (n in model_names) {

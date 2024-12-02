@@ -16,6 +16,7 @@ If you use [Nix](https://nixos.org/), you can install R and the relevant package
 ## The modeling pipeline
 
 All scripts should be run from this directory.
+To run the variants of the norming and factivity models which use ordered beta likelihoods instead of truncated normal likelihoods, follow the instructions below, replacing any occurrences of 'truncation' with 'inflation' throughout.
 
 ### The norming models
 
