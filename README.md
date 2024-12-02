@@ -5,6 +5,9 @@ We also include the data from [Degen and Tonhauser 2021](https://direct.mit.edu/
 
 To properly clone this repository, you should do `git clone --recurse-submodules git@github.com:FACTSlab/grove-white-factivity.git`.
 
+All models reported in the paper were run on a Lenovo ThinkPad X1 Carbon Gen 12 with 64GB of memory and a 64GB swap partition.
+They require about 128GB of hard drive space altogether.
+
 ## Installation
 
 Two R packages are required:
