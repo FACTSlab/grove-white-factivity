@@ -21,16 +21,16 @@ functions {
 
 data {
   // data from the the Degen and Tonhauser (2021) norming experiment:
-  int<lower=1> N_context;	      // number of contexts (items)
-  int<lower=1> N_participant;	      // number of participants
-  int<lower=1> N_data_tr;	      // number of training data points
-  int<lower=1> N_data_te;	      // number of test data points
-  vector<lower=0, upper=1>[N_data] y_tr; // training response (between 0 and 1)
-  vector<lower=0, upper=1>[N_data] y_te; // test response (between 0 and 1)
-  array[N_data] int<lower=1, upper=N_context> context_tr; // map from training data points to contexts
-  array[N_data] int<lower=1, upper=N_context> context_te; // map from test data points to contexts
-  array[N_data] int<lower=1, upper=N_participant> participant_tr; // map from test data points to participants
-  array[N_data] int<lower=1, upper=N_participant> participant_te; // map from test data points to participants
+  int<lower=1> N_context;		    // number of contexts (items)
+  int<lower=1> N_participant;		    // number of participants
+  int<lower=1> N_data_tr;		    // number of training data points
+  int<lower=1> N_data_te;		    // number of test data points
+  vector<lower=0, upper=1>[N_data_tr] y_tr; // training response (between 0 and 1)
+  vector<lower=0, upper=1>[N_data_te] y_te; // test response (between 0 and 1)
+  array[N_data_tr] int<lower=1, upper=N_context> context_tr; // map from training data points to contexts
+  array[N_data_te] int<lower=1, upper=N_context> context_te; // map from test data points to contexts
+  array[N_data_tr] int<lower=1, upper=N_participant> participant_tr; // map from test data points to participants
+  array[N_data_te] int<lower=1, upper=N_participant> participant_te; // map from test data points to participants
 }
 
 parameters {
@@ -106,7 +106,7 @@ model {
   // LIKELIHOOD
   // 
 
-  for (i in 1:N_data) {
+  for (i in 1:N_data_tr) {
     if (y_tr[i] >= 0 && y_tr[i] <= 1)
       target += likelihood_lpdf(
 				y_tr[i] |

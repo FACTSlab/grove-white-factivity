@@ -11,7 +11,7 @@ source("fits/preprocessing/degen_tonhauser_norming.r");
 
 ## folds:
 K <- 5; # number of folds
-N_data <- nrow(projection);
+N_data <- nrow(norming);
 folds <- sample(rep(1:K,each=N_data/K));
 
 ## fixed effects levels:
