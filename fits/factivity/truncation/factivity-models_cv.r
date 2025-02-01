@@ -35,7 +35,7 @@ model_names <- c("discrete-factivity_cv","wholly-gradient_cv","discrete-world_cv
 for (n in model_names) {
     for (f in 1:K) {
         ## projection training data:
-        projection_tr <- projection[folds!=f,]
+        projection_tr <- projection[folds!=f,];
         N_data_tr <- nrow(projection_tr);
         predicate_tr <- projection_tr$predicate_number;
         context_tr <- projection_tr$context_number;

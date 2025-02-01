@@ -77,7 +77,7 @@ transformed parameters {
   vector[N_context] omega;		    // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
   vector<lower=0, upper=1>[N_data_tr] w_tr; // certainty on the unit interval for training data
-  vector<lower=0, upper=1>[N_data_te] w_te; // certainty on the unit interval for training data
+  vector<lower=0, upper=1>[N_data_te] w_te; // certainty on the unit interval for test data
 
   // 
   // DEFINITIONS
