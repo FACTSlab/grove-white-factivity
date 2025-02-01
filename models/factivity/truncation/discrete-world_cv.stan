@@ -4,8 +4,8 @@ functions {
       log_diff_exp(normal_lcdf(b | mu, sigma),
 		   normal_lcdf(a | mu, sigma));
   }
-  
-  // the discrete-factivity model likelihood:
+
+  // the discrete-world model likelihood:
   real likelihood_lpdf(
 		       real y,
 		       real predicate,
@@ -13,23 +13,28 @@ functions {
 		       real sigma
 		       ) {
     return log_mix(
-		   predicate,
+		   world,
 		   truncated_normal_lpdf(y | 1, sigma, 0, 1),
-		   truncated_normal_lpdf(y | world, sigma, 0, 1)
+		   truncated_normal_lpdf(y | predicate, sigma, 0, 1)
 		   );
   }
 }
 
 data {
   // the Degen and Tonhauser (2021) projection experiment:
-  int<lower=1> N_predicate;	      // number of predicates
-  int<lower=1> N_context;	      // number of contexts
-  int<lower=1> N_participant;	      // number of participants
-  int<lower=1> N_data;		      // number of data points
-  vector<lower=0, upper=1>[N_data] y; // response (between 0 and 1)
-  array[N_data] int<lower=1, upper=N_predicate> predicate; // map from data points to predicates
-  array[N_data] int<lower=1, upper=N_context> context; // map from data points to contexts
-  array[N_data] int<lower=1, upper=N_participant> participant; // map from data points to participants
+  int<lower=1> N_predicate;		    // number of predicates
+  int<lower=1> N_context;		    // number of contexts
+  int<lower=1> N_participant;		    // number of participants
+  int<lower=1> N_data_tr;		    // number of training data points
+  int<lower=1> N_data_te;		    // number of test data points
+  vector<lower=0, upper=1>[N_data_tr] y_tr; // training response (between 0 and 1)
+  vector<lower=0, upper=1>[N_data_te] y_te; // test response (between 0 and 1)
+  array[N_data_tr] int<lower=1, upper=N_predicate> predicate_tr; // map from training data points to predicates
+  array[N_data_te] int<lower=1, upper=N_predicate> predicate_te; // map from test data points to predicates
+  array[N_data_tr] int<lower=1, upper=N_context> context_tr; // map from training data points to contexts
+  array[N_data_te] int<lower=1, upper=N_context> context_te; // map from test data points to contexts
+  array[N_data_tr] int<lower=1, upper=N_participant> participant_tr; // map from training data points to participants
+  array[N_data_te] int<lower=1, upper=N_participant> participant_te; // map from test data points to participants
 
   // world knowledge log-odds means and standard deviations, obtained from the norming experiment:
   vector[N_context] mu_omega;
@@ -67,10 +72,12 @@ parameters {
 transformed parameters {
   vector[N_predicate] nu;	// log-odds of projection
   vector[N_participant] epsilon_nu; // by-participant intercepts for the log-odds of projection
-  vector<lower=0, upper=1>[N_data] v; // probability of projection
-  vector[N_context] omega; // log-odds certainty
+  vector<lower=0, upper=1>[N_data_tr] v_tr; // probability of projection for training data
+  vector<lower=0, upper=1>[N_data_te] v_te; // probability of projection for test data
+  vector[N_context] omega;		    // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
-  vector<lower=0, upper=1>[N_data] w; // certainty on the unit interval
+  vector<lower=0, upper=1>[N_data_tr] w_tr; // certainty on the unit interval for training data
+  vector<lower=0, upper=1>[N_data_te] w_te; // certainty on the unit interval for training data
 
   // 
   // DEFINITIONS
@@ -90,10 +97,16 @@ transformed parameters {
   epsilon_nu = sigma_epsilon_nu * z_epsilon_nu;
   epsilon_omega = sigma_epsilon_omega * z_epsilon_omega;
 
-  // latent parameters before jittering is added:
-  for (i in 1:N_data) {
-    v[i] = inv_logit(nu[predicate[i]] + epsilon_nu[participant[i]]);
-    w[i] = inv_logit(omega[context[i]] + epsilon_omega[participant[i]]);
+  // latent parameters before jittering is added (training data):
+  for (i in 1:N_data_tr) {
+    v_tr[i] = inv_logit(nu[predicate_tr[i]] + epsilon_nu[participant_tr[i]]);
+    w_tr[i] = inv_logit(omega[context_tr[i]] + epsilon_omega[participant_tr[i]]);
+  }
+
+  // latent parameters before jittering is added (test data):
+  for (i in 1:N_data_te) {
+    v_te[i] = inv_logit(nu[predicate_te[i]] + epsilon_nu[participant_te[i]]);
+    w_te[i] = inv_logit(omega[context_te[i]] + epsilon_omega[participant_te[i]]);
   }
 }
 
@@ -125,12 +138,12 @@ model {
   // LIKELIHOOD
   // 
   
-  for (i in 1:N_data) {
-    if (y[i] >= 0 && y[i] <= 1)
+  for (i in 1:N_data_tr) {
+    if (y_tr[i] >= 0 && y_tr[i] <= 1)
       target += likelihood_lpdf(
-				y[i] |
-				v[i],
-				w[i],
+				y_tr[i] |
+				v_tr[i],
+				w_tr[i],
 				sigma_e
 				);
     else
@@ -139,18 +152,30 @@ model {
 }
 
 generated quantities {
-  vector[N_data] ll;	  // log-likelihoods (needed for WAIC/PSIS calculations)
+  vector[N_data_tr] ll_tr;	// log-likelihoods on training data
+  vector[N_data_te] ll_te;	// log-likelihoods on test data
   
-  // definition:
-  for (i in 1:N_data) {
-    if (y[i] >= 0 && y[i] <= 1)
-      ll[i] = likelihood_lpdf(
-			      y[i] |
-			      v[i],
-			      w[i],
+  // definitions:
+  for (i in 1:N_data_tr) {
+    if (y_tr[i] >= 0 && y_tr[i] <= 1)
+      ll_tr[i] = likelihood_lpdf(
+			      y_tr[i] |
+			      v_tr[i],
+			      w_tr[i],
 			      sigma_e
 			      );
     else
-      ll[i] = negative_infinity();
+      ll_tr[i] = negative_infinity();
+  }
+  for (i in 1:N_data_te) {
+    if (y_te[i] >= 0 && y_te[i] <= 1)
+      ll_te[i] = likelihood_lpdf(
+			      y_te[i] |
+			      v_te[i],
+			      w_te[i],
+			      sigma_e
+			      );
+    else
+      ll_te[i] = negative_infinity();
   }
 }

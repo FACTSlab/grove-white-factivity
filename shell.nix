@@ -1,4 +1,4 @@
-let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-24.05.tar.gz);
+let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-24.11.tar.gz);
 in
 { pkgs ? import nixpkgs_source {
     inherit system;
@@ -17,8 +17,9 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "stan-dev";
       repo = "cmdstanr";
-      rev = "ced35d1cb02768f47fa215e40c1bc9a2ebcf4b70";
-      sha256 = "0qcqnb80wif0j1b0lvhqfxr5wflmqccgl3i0h8d07pz18wl5h09n";
+      # It may be necessary to adjust these to get the latest version:
+      rev = "ce589817907ec450e74a6b31b4bd59d4ed6ccc31";
+      sha256 = "0qz3qm0jbg4nbnik1fbfrfqzaqjj0prhi8hk68bpn2crdm498zq3";
     };
     propagatedBuildInputs = [
       pkgs.rPackages.checkmate
@@ -33,8 +34,10 @@ let
   };
   R-stuff = pkgs.rWrapper.override {
     packages = with pkgs.rPackages; [
+      brms
       cmdstanr
       loo
+      rstan
     ];
   };
 in

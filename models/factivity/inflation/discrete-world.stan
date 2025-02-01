@@ -160,12 +160,12 @@ model {
   
   // predicates:
   sigma_nu ~ exponential(1);
-  z_nu ~ normal(0, 1);
+  z_nu ~ std_normal;
   // sigma_alpha ~ exponential(1);
-  // z_alpha ~ normal(0, 1);
+  // z_alpha ~ std_normal;
 
   // contexts:
-  z_omega ~ normal(0, 1);
+  z_omega ~ std_normal;
 
   
   //
@@ -174,13 +174,13 @@ model {
   
   // by-participant random intercepts:
   sigma_epsilon_nu ~ exponential(1);
-  z_epsilon_nu ~ normal(0, 1);
+  z_epsilon_nu ~ std_normal;
   sigma_epsilon_omega ~ exponential(1);
-  z_epsilon_omega ~ normal(0, 1);
+  z_epsilon_omega ~ std_normal;
   sigma_epsilon_k1 ~ exponential(1);
-  z_epsilon_k1 ~ normal(0, 1);
+  z_epsilon_k1 ~ std_normal;
   sigma_epsilon_k2 ~ exponential(1);
-  z_epsilon_k2 ~ normal(0, 1);
+  z_epsilon_k2 ~ std_normal;
 
 
   //
