@@ -64,6 +64,6 @@ for (n in model_names) {
                                adapt_delta=0.99,
                                output_dir=output_dir
                            );
-        saveRDS(model_fit,file=paste0(output_dir,n,".rds"),compress="xz");
+        saveRDS(model_fit,file=paste0(output_dir,n,"_fold",f,".rds"),compress="xz");
     }
 }
