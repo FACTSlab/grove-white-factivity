@@ -1,6 +1,6 @@
 library(cmdstanr);
 options(mc.cores=parallel::detectCores());
-## cmdstanr::install_cmdstan(overwrite=TRUE); # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
+# cmdstanr::install_cmdstan(overwrite=TRUE); # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## the directory where your output files will be saved:
 output_dir <- "fits/factivity/truncation/results/";
@@ -43,7 +43,7 @@ for (n in model_names) {
         y_tr <- projection_tr$response;
         
         ## projection test data:
-        projection_te <- projection[folds!=f,]
+        projection_te <- projection[folds==f,]
         N_data_te <- nrow(projection_te);
         predicate_te <- projection_te$predicate_number;
         context_te <- projection_te$context_number;
@@ -76,8 +76,9 @@ for (n in model_names) {
                                seed=1337,
                                chains=4,
                                parallel_chains=4,
-                               iter_warmup=12000,
-                               iter_sampling=12000,
+                               iter_warmup=15000,
+                               iter_sampling=15000,
+			       thin=5,
                                adapt_delta=0.99,
                                output_dir=output_dir
                            );
