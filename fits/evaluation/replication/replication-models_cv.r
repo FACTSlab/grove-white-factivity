@@ -25,7 +25,7 @@ N_context <- length(unique(replication$context));
 ## random effects levels:
 N_participant <- length(unique(replication$participant));
 
-model_names <- c("discrete-factivity_cv","wholly-gradient_cv","discrete-world_cv","wholly-discrete_cv");
+model_names <- c("discrete-factivity","wholly-gradient","discrete-world","wholly-discrete");
 
 for (n in model_names) {
     mu_nu <- readRDS(paste0(factivity_dir,n,"_mu_nu.rds"));
@@ -69,7 +69,7 @@ for (n in model_names) {
             sigma_omega=sigma_omega
         );
         
-        model_path <- file.path("models/evaluation/replication/",paste0(n,".stan"));
+        model_path <- file.path("models/evaluation/replication/",paste0(n,"_cv.stan"));
         model <- cmdstan_model(stan_file=model_path);
         model_fit <- model$sample(
                                data=data,
