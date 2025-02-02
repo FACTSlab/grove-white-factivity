@@ -77,9 +77,9 @@ for (n in model_names) {
                                seed=1337,
                                chains=4,
                                parallel_chains=4,
-                               iter_warmup=45000,
-                               iter_sampling=45000,
-                               thin=15,
+                               iter_warmup=100, # 45000,
+                               iter_sampling=100, # 45000,
+                               ## thin=15,
                                adapt_delta=0.99,
                                output_dir=output_dir
                            );   

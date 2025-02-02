@@ -22,13 +22,13 @@ functions {
 
 data {
   // our replication of the Degen and Tonhauser (2021) projection experiment:
-  int<lower=1> N_predicate;		 // number of predicates
-  int<lower=1> N_context;		 // number of contexts
-  int<lower=1> N_participant;		 // number of participants
-  int<lower=1> N_data_tr;		 // number of training data points
-  int<lower=1> N_data_te;		 // number of test data points
-  vector<lower=0, upper=1>[N_data] y_tr; // training response (between 0 and 1)
-  vector<lower=0, upper=1>[N_data] y_te; // test response (between 0 and 1)
+  int<lower=1> N_predicate;		    // number of predicates
+  int<lower=1> N_context;		    // number of contexts
+  int<lower=1> N_participant;		    // number of participants
+  int<lower=1> N_data_tr;		    // number of training data points
+  int<lower=1> N_data_te;		    // number of test data points
+  vector<lower=0, upper=1>[N_data_te] y_tr; // training response (between 0 and 1)
+  vector<lower=0, upper=1>[N_data_tr] y_te; // test response (between 0 and 1)
   array[N_data_tr] int<lower=1, upper=N_predicate> predicate_tr; // map from training data points to predicates
   array[N_data_te] int<lower=1, upper=N_predicate> predicate_te; // map from test data points to predicates
   array[N_data_tr] int<lower=1, upper=N_context> context_tr; // map from training data points to contexts
