@@ -15,7 +15,7 @@ replication <- read.csv("data/replication/replication.csv");
 
 ## folds:
 K <- 5; # number of folds
-N_data <- nrow(projection);
+N_data <- nrow(replication);
 folds <- sample(rep(1:K,each=N_data/K));
 
 ## fixed effects levels:
