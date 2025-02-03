@@ -29,9 +29,9 @@ data {
   vector<lower=0, upper=1>[N_data_tr] y_tr; // training response (between 0 and 1)
   vector<lower=0, upper=1>[N_data_te] y_te; // test response (between 0 and 1)
   array[N_data_tr] int<lower=1, upper=N_predicate> predicate_tr; // map from data points to predicates (training data)
-  array[N_data_te] int<lower=1, upper=N_predicate> predicate_tr; // map from data points to predicates (test data)
+  array[N_data_te] int<lower=1, upper=N_predicate> predicate_te; // map from data points to predicates (test data)
   array[N_data_tr] int<lower=1, upper=N_participant> participant_tr; // map from data points to participants (training data)
-  array[N_data_te] int<lower=1, upper=N_participant> participant_tr; // map from data points to participants (test data)
+  array[N_data_te] int<lower=1, upper=N_participant> participant_te; // map from data points to participants (test data)
   
   // predicate log-odds means and standard deviations, obtained from the projection experiment:
   vector[N_predicate] mu_nu;
@@ -74,7 +74,7 @@ transformed parameters {
   real omega;				    // log-odds certainty
   vector[N_participant] epsilon_omega; // by-participant intercepts for the log-odds certainty
   vector<lower=0, upper=1>[N_data_tr] w_tr; // certainty on the unit interval (training data)
-  vector<lower=0, upper=1>[N_data_tr] w_te; // certainty on the unit interval (test data)
+  vector<lower=0, upper=1>[N_data_te] w_te; // certainty on the unit interval (test data)
 
   // 
   // DEFINITIONS
@@ -111,10 +111,10 @@ model {
   // 
   
   // predicates:
-  z_nu ~ std_normal();g
+  z_nu ~ std_normal();
 
   // contexts:
-  z_omega ~ std_normal();g
+  z_omega ~ std_normal();
   sigma_omega ~ exponential(1);
 
   
@@ -124,9 +124,9 @@ model {
   
   // by-participant random intercepts:
   sigma_epsilon_nu ~ exponential(1);
-  z_epsilon_nu ~ std_normal();g
+  z_epsilon_nu ~ std_normal();
   sigma_epsilon_omega ~ exponential(1);
-  z_epsilon_omega ~ std_normal();g
+  z_epsilon_omega ~ std_normal();
 
   
   //
