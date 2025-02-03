@@ -50,7 +50,7 @@ for (n in model_names) {
         predicate_te <- non_contentful_te$predicate_number;
         participant_te <- non_contentful_te$participant;
         y_te <- non_contentful_te$response;
-
+        
         data <- list(
             N_predicate=N_predicate,
             N_participant=N_participant,
@@ -65,22 +65,22 @@ for (n in model_names) {
             mu_nu=mu_nu,
             sigma_nu=sigma_nu
         );
-    );
-    model_path <- file.path("models/evaluation/non-contentful/",paste0(n,"_cv.stan"));
-    model <- cmdstan_model(stan_file=model_path);
-    model_fit <- model$sample(
-                           data=data,
-                           refresh=20,
-                           seed=1337,
-                           chains=4,
-                           parallel_chains=N_chains,
-                           iter_warmup=3*N_samples,
-                           iter_sampling=3*N_samples,
-                           thin=3,
-                           adapt_delta=0.99,
-                           output_dir=output_dir
-                       );   
-    saveRDS(model_fit,file=paste0(output_dir,n,"_cv_fold",f,".rds"),compress="xz");
+        model_path <- file.path("models/evaluation/non-contentful/",paste0(n,"_cv.stan"));
+        model <- cmdstan_model(stan_file=model_path);
+        model_fit <- model$sample(
+                               data=data,
+                               refresh=20,
+                               seed=1337,
+                               chains=4,
+                               parallel_chains=N_chains,
+                               iter_warmup=3*N_samples,
+                               iter_sampling=3*N_samples,
+                               thin=3,
+                               adapt_delta=0.99,
+                               output_dir=output_dir
+                           );   
+        saveRDS(model_fit,file=paste0(output_dir,n,"_cv_fold",f,".rds"),compress="xz");
+    }
 }
 
 ## model comparisons:
