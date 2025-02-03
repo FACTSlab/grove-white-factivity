@@ -154,7 +154,7 @@ model {
 
 generated quantities {
   vector[N_data_tr] ll_tr;	// log-likelihoods on training data
-  vector[N_data_tr] ll_te;	// log-likelihoods on test data
+  vector[N_data_te] ll_te;	// log-likelihoods on test data
   
   // definitions:
   for (i in 1:N_data_tr) {
