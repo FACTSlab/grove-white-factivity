@@ -44,9 +44,9 @@ data <- list(
     sigma_omega=sigma_omega
 );
 
-model_names <- c("wholly-gradient","wholly-discrete");
+model_names <- c("discrete-factivity","wholly-gradient","wholly-discrete");
 
-## fit and save all four models:
+## fit and save all three models:
 for (n in model_names) {
     model_path <- file.path("models/factivity/anti-veridicality/",paste0(n,".stan"));
     model <- cmdstan_model(stan_file=model_path);
