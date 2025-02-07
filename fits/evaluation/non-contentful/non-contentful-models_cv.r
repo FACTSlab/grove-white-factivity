@@ -3,8 +3,8 @@ options(mc.cores=parallel::detectCores());
 ## cmdstanr::install_cmdstan(overwrite=TRUE) # un-comment this line to update or install cmdstanr (e.g., if you're running a Stan model for the first time).
 
 ## choose whether bleached or templatic:
-which <- "bleached";
-## which <- "templatic";
+## which <- "bleached";
+which <- "templatic";
 
 ## the directory where your output files will be saved:
 output_dir <- paste0("fits/evaluation/non-contentful/results-",which,"/");
