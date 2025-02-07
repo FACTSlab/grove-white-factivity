@@ -111,7 +111,6 @@ transformed parameters {
     v_te[i] = inv_logit(nu[predicate_te[i]] + epsilon_nu[participant_te[i]]);
     w_te[i] = inv_logit(omega[context_te[i]] + epsilon_omega[participant_te[i]]);
   }
-
 }
 
 model {
