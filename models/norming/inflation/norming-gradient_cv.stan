@@ -157,8 +157,8 @@ model {
 				y_tr[i] |
 				w_tr[i],
 				eta,
-				k1[participant[i]],
-				k2[participant[i]],
+				k1[participant_tr[i]],
+				k2[participant_tr[i]],
 				phi
 				);
     else
@@ -176,7 +176,10 @@ generated quantities {
       ll_tr[i] = likelihood_lpdf(
 				 y_tr[i] |
 				 w_tr[i],
-				 sigma_e
+				 eta,
+				 k1[participant_tr[i]],
+				 k2[participant_tr[i]],
+				 phi
 				 );
     else
       ll_tr[i] = negative_infinity();
@@ -186,7 +189,9 @@ generated quantities {
       ll_te[i] = likelihood_lpdf(
 				 y_te[i] |
 				 w_te[i],
-				 sigma_e
+				 k1[participant_te[i]],
+				 k2[participant_te[i]],
+				 phi
 				 );
     else
       ll_te[i] = negative_infinity();
