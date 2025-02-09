@@ -30,7 +30,7 @@ functions {
 		       ) {
     return ordered_beta_lpdf(y | k1, k2, world, phi);
   }
-
+}
 
 data {
   // the Degen and Tonhauser (2021) norming experiment:
@@ -125,7 +125,7 @@ model {
   
   // contexts:
   sigma_omega ~ exponential(1);
-  z_omega ~ std_normal;
+  z_omega ~ std_normal();
 
   
   //
@@ -134,11 +134,11 @@ model {
   
   // by-participant random intercepts:
   sigma_epsilon_omega ~ exponential(1);
-  z_epsilon_omega ~ std_normal;
+  z_epsilon_omega ~ std_normal();
   sigma_epsilon_k1 ~ exponential(1);
-  z_epsilon_k1 ~ std_normal;
+  z_epsilon_k1 ~ std_normal();
   sigma_epsilon_k2 ~ exponential(1);
-  z_epsilon_k2 ~ std_normal;
+  z_epsilon_k2 ~ std_normal();
 
 
   //

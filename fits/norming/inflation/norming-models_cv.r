@@ -25,7 +25,7 @@ model_names <- c("norming-gradient","norming-discrete");
 N_chains <- 4;     # number of chains
 N_samples <- 3000; # number of samples per chain
 
-fit and save both models:
+## fit and save both models:
 for (n in model_names) {
     for (f in 1:K) {
         ## norming training data:
