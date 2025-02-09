@@ -71,8 +71,7 @@ parameters {
   vector[N_participant] z_epsilon_k2; // by-participant z-scores
   
   // likelihood parameters:
-  real<lower=0> log_k;			// ordered beta cutpoints absolute value
-  real<lower=0> eta; 			// absolute value of the 0/1 component
+  real<lower=0> log_k;		// ordered beta cutpoints absolute value
   real<lower=0> phi;		// beta sample size
 }
 
@@ -147,7 +146,6 @@ model {
 
   // parameters:
   log_k ~ normal(log(4), 1);
-  eta ~ normal(1.5, 1);
   phi ~ exponential(0.1);
   
   // definition:
@@ -156,7 +154,6 @@ model {
       target += likelihood_lpdf(
 				y_tr[i] |
 				w_tr[i],
-				eta,
 				k1[participant_tr[i]],
 				k2[participant_tr[i]],
 				phi
@@ -176,7 +173,6 @@ generated quantities {
       ll_tr[i] = likelihood_lpdf(
 				 y_tr[i] |
 				 w_tr[i],
-				 eta,
 				 k1[participant_tr[i]],
 				 k2[participant_tr[i]],
 				 phi

@@ -196,6 +196,7 @@ generated quantities {
       ll_te[i] = likelihood_lpdf(
 				 y_te[i] |
 				 w_te[i],
+				 eta,
 				 k1[participant_te[i]],
 				 k2[participant_te[i]],
 				 phi
