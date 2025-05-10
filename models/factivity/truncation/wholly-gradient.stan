@@ -101,11 +101,11 @@ model {
   // 
   
   // predicates:
-  z_nu ~ std_normal;
+  z_nu ~ std_normal();
   sigma_nu ~ exponential(1);
 
   // contexts:
-  z_omega ~ std_normal;
+  z_omega ~ std_normal();
 
   
   //
@@ -114,9 +114,9 @@ model {
   
   // by-participant random intercepts:
   sigma_epsilon_nu ~ exponential(1);
-  z_epsilon_nu ~ std_normal;
+  z_epsilon_nu ~ std_normal();
   sigma_epsilon_omega ~ exponential(1);
-  z_epsilon_omega ~ std_normal;
+  z_epsilon_omega ~ std_normal();
 
   
   //
